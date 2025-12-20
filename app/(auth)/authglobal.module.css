@@ -1,0 +1,5 @@
+.container{
+    background-color: hsl(225, 52%, 14%);
+    background-image: radial-gradient(at 50% 50%, hsla(210, 100%, 9%, 0.5), hsl(0, 0%, 0%));
+    background-repeat: 'no-repeat';
+}
