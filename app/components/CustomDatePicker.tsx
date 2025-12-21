@@ -3,10 +3,10 @@ import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
+import { Dayjs } from 'dayjs';
 export default function CustomDatePicker() {
-  const [startDate, setStartDate] = React.useState<dayjs.Dayjs | null>(null);
-  const [endDate, setEndDate] = React.useState<dayjs.Dayjs | null>(null);
+  const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
