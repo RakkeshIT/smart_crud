@@ -30,8 +30,7 @@ const CreateTask = () => {
         setField(prev => prev.filter((_, index) => index !== i))
     }
     return (
-        <Container maxWidth="lg" sx={{m: 5}}>
-            <Grid container spacing={3} >
+        <Grid container spacing={3} >
                 <Grid
                     size={{ xs: 12, md: 4 }}                   
                     sx={{
@@ -151,7 +150,6 @@ const CreateTask = () => {
                 </Grid>
 
             </Grid>
-        </Container>
     )
 }
 

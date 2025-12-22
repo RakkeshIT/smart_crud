@@ -13,7 +13,7 @@ export default function SignUpPage() {
         placeItems: "center",
       }}
       >
-        <SignUp signInUrl="/login" fallbackRedirectUrl='/client/create-task'/>
+        <SignUp signInUrl="/login" fallbackRedirectUrl='/client/create-task' />
       </Container>
     </Box>
   );

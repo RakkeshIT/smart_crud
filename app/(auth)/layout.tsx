@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from '../components/layouts/Header'
+import Header from '../components/layouts/DashboardLayout'
 import Style from './authglobal.module.css'
 const layout = ({children}: {children: React.ReactNode}) => {
   return (
