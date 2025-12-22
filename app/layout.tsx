@@ -3,7 +3,14 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import ResponsiveDialog from "./components/globalDialog";
-
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from '@clerk/nextjs'
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -21,6 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
       <body
         className={`${inter.variable} antialiased`}
@@ -31,5 +39,7 @@ export default function RootLayout({
          </AppRouterCacheProvider>
       </body>
     </html>
+    </ClerkProvider>
+
   );
 }
