@@ -1,4 +1,9 @@
+import React from 'react'
 
-export const ClientPage = () => {
-    return <div>Client Page</div>;
+const page = () => {
+  return (
+    <div>page</div>
+  )
 }
+
+export default page
