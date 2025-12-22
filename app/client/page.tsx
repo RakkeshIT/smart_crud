@@ -6,5 +6,5 @@ const ClientPage = () => {
   )
 }
 
-export default ClientPage
+export default ClientPage;
 
