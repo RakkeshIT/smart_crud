@@ -1,13 +1,13 @@
 'use client'
 import * as React from 'react';
-import { Container, Box, Typography, Button } from '@mui/material';
+import { Container, Box } from '@mui/material';
 import TextPressure from '../components/TextPressure';
 import { RainbowButton } from '../components/ui/rainbow-button';
 export default function SignInCard() {
 
   return (
     <>
-    
+
       <Box
         sx={{
           minHeight: '100vh',
