@@ -14,13 +14,16 @@ import {
   ListItemText,
   Toolbar,
   Typography,
-  Avatar
+  Avatar,
+  Menu,
+  MenuItem,
 } from '@mui/material';
-import { useUser } from '@clerk/nextjs';
+import { useUser, useClerk } from '@clerk/nextjs';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import Link from 'next/link';
 
 const DRAWER_WIDTH_OPEN = 200;
 const DRAWER_WIDTH_CLOSED = 50;
@@ -37,29 +40,74 @@ export default function DashboardLayoutWrapper({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = React.useState(true);
-  const {user} = useUser()
+  const {user} = useUser();
+  const  {signOut} = useClerk();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const MenuOpen = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
 
       {/* Header */}
-      <AppBar
-        position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: 'white', color: 'black', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }}
-      >
-        <Toolbar>
-          <Typography variant="h6" noWrap sx={{ ml: 2 }}>
-            My Dashboard
-          </Typography>
-          <IconButton sx={{ backgroundColor: 'rgba(75, 0, 130, 0.3)', borderRadius: '10px', ml: 2, '&:hover': { backgroundColor: 'rgba(75, 0, 130, 0.7)' } }} onClick={() => setOpen(!open)}>
-            <MenuRoundedIcon />
-          </IconButton>
-        </Toolbar>
+    <AppBar
+  position="fixed"
+  sx={{
+    zIndex: (theme) => theme.zIndex.drawer + 1,
+    bgcolor: 'white',
+    color: 'black',
+    boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+  }}
+>
+  <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    {/* Left: Title + Drawer Toggle */}
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Typography variant="h6" noWrap>
+        My Dashboard
+      </Typography>
 
-        <Avatar
-          src={user?.imageUrl}
-        />
-      </AppBar>
+      <IconButton
+        sx={{
+          backgroundColor: 'rgba(75,0,130,0.3)',
+          borderRadius: '10px',
+          ml: 2,
+          '&:hover': { backgroundColor: 'rgba(75,0,130,0.7)' },
+        }}
+        onClick={() => setOpen(!open)}
+      >
+        <MenuRoundedIcon />
+      </IconButton>
+    </Box>
+
+    {/* Right: Profile Avatar */}
+    <Box>
+      <IconButton
+        onClick={handleClick}
+        size="small"
+        sx={{ p: 0 }} // remove extra padding
+      >
+        <Avatar src={user?.imageUrl} sx={{ width: 32, height: 32 }} />
+      </IconButton>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <MenuItem><Link href="/client/profile">Profile</Link></MenuItem>
+        <MenuItem onClick={() => signOut({redirectUrl: '/login'})}>Logout</MenuItem>
+      </Menu>
+    </Box>
+  </Toolbar>
+</AppBar>
+
 
       {/* Sidebar */}
       <Drawer
