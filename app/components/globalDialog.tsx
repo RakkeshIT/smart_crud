@@ -39,7 +39,6 @@ export function SuccessDialog(message: string) {
 export function ErrorDialog(message: string) {
   showDialogFn?.('Error', message)
 }
-
 export function ConfirmDialog(message: string, onConfirm: () => void) {
   showDialogFn?.('Confirm', message, onConfirm)
 }
