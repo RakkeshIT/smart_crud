@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import {
   Dialog,
   DialogTitle,
@@ -54,7 +55,7 @@ export default function ResponsiveDialog() {
   const [message, setMessage] = useState('');
   const [options, setOptions] = useState<string[]>([]);
   const [onConfirm, setOnConfirm] = useState<(value?: string) => void>(() => { });
-  const optionIconMap: Record<string, JSX.Element> = {
+  const optionIconMap: Record<string, React.ReactNode> = {
     student: <SchoolIcon fontSize="large" />,
     "government-aspirant": <GavelIcon fontSize="large" />,
     "job-seeker": <WorkIcon fontSize="large" />,
