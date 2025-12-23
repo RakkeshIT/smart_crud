@@ -14,7 +14,7 @@ export default function SignUpPage() {
 
       }}
       >
-        <SignIn signUpUrl="/register" fallbackRedirectUrl='/client/create-task'/>
+        <SignIn signUpUrl="/register" fallbackRedirectUrl='/client'/>
       </Container>
     </Box>
   );

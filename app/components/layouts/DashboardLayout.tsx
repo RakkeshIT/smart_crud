@@ -17,6 +17,7 @@ import {
   Avatar,
   Menu,
   MenuItem,
+  Collapse,
 } from '@mui/material';
 import { useUser, useClerk } from '@clerk/nextjs';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
@@ -24,14 +25,23 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import Link from 'next/link';
-
 const DRAWER_WIDTH_OPEN = 200;
 const DRAWER_WIDTH_CLOSED = 50;
-
+import Image from 'next/image';
+import { History, Task, ExpandLess, ExpandMore } from '@mui/icons-material';
 const menuItems = [
-  { text: 'Dashboard', icon: <DashboardIcon sx={{ color: '#4B0082' }} /> },
-  { text: 'Orders', icon: <ShoppingCartIcon sx={{ color: '#4B0082' }} /> },
-  { text: 'Reports', icon: <BarChartIcon sx={{ color: '#4B0082' }} /> },
+  { text: 'Dashboard', href:'/client', icon: <DashboardIcon sx={{ color: '#4B0082' }} /> },
+  { text: 'History', href:'/client/history', icon: <History sx={{ color: '#4B0082' }} /> },
+  { text: 'Reports', href:'/client/reports', icon: <BarChartIcon sx={{ color: '#4B0082' }} /> },
+  { text: 'Task', subMenu: [
+    { text: 'Create Task', href:'/client/tasks/create' },
+    { text: 'View Tasks', href:'/client/tasks' },
+    // Completed Task
+    { text: 'Completed Tasks', href:'/client/tasks/completed' },
+    // tash history
+    { text: 'Task History', href:'/client/tasks/history' },
+    
+  ], icon: <Task sx={{ color: '#4B0082' }} /> },
 ];
 
 export default function DashboardLayoutWrapper({
@@ -40,6 +50,7 @@ export default function DashboardLayoutWrapper({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = React.useState(true);
+  const [openSubMenu, setOpenSubMenu] = React.useState<string | null>(null);
   const {user} = useUser();
   const  {signOut} = useClerk();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -50,6 +61,9 @@ export default function DashboardLayoutWrapper({
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleSubMenuClick = (text: string) => {
+    setOpenSubMenu((pre) => ( pre === text ? null : text))
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -67,9 +81,7 @@ export default function DashboardLayoutWrapper({
   <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
     {/* Left: Title + Drawer Toggle */}
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Typography variant="h6" noWrap>
-        My Dashboard
-      </Typography>
+      <Image src='/logo.png' alt="Logo" width={60} height={20} />
 
       <IconButton
         sx={{
@@ -96,7 +108,7 @@ export default function DashboardLayoutWrapper({
 
       <Menu
         anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
+        open={MenuOpen}
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -129,30 +141,64 @@ export default function DashboardLayoutWrapper({
         }}
       >
         <Toolbar />
-        <List>
-          {menuItems.map((item) => (
-            <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
+          <List>
+      {menuItems.map((item) => (
+        <React.Fragment key={item.text}>
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+              onClick={() => item.subMenu && handleSubMenuClick(item.text)}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                {open && <ListItemText primary={item.text} />}
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+                {item.icon}
+              </ListItemIcon>
+
+              {open && (
+                <>
+                  {item.href ? (
+                    <Link href={item.href}>
+                      <ListItemText primary={item.text} />
+                    </Link>
+                  ) : (
+                    <ListItemText primary={item.text} />
+                  )}
+
+                  {item.subMenu && (openSubMenu === item.text ? <ExpandLess /> : <ExpandMore />)}
+                </>
+              )}
+            </ListItemButton>
+
+            {/* Submenu */}
+            {item.subMenu && (
+              <Collapse in={openSubMenu === item.text && open} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {item.subMenu.map((subItem: any) => (
+                    <ListItemButton
+                      key={subItem.text}
+                      sx={{ pl: 4, justifyContent: 'initial' }}
+                    >
+                      <Link href={subItem.href}>
+                        <ListItemText primary={subItem.text} />
+                      </Link>
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Collapse>
+            )}
+          </ListItem>
+        </React.Fragment>
+      ))}
+    </List>
       </Drawer>
 
       {/* Main content */}

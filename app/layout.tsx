@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import ResponsiveDialog from "./components/globalDialog";
@@ -11,9 +11,11 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
-const inter = Inter({
+const poppins = Poppins({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ['300', '400', '500', '600', '700'],
+  display: "swap",
+  variable: "--font-poppins",
 });
 
 
@@ -31,7 +33,7 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
       <body
-        className={`${inter.variable} antialiased`}
+        className={poppins.className}
       >
          <AppRouterCacheProvider>
            {children}

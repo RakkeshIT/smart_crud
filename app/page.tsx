@@ -7,7 +7,6 @@ export default function SignInCard() {
 
   return (
     <>
-
       <Box
         sx={{
           minHeight: '100vh',
@@ -41,9 +40,15 @@ export default function SignInCard() {
               minFontSize={30}
             />
 
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+            <RainbowButton className="mt-8 px-8" href="/login">
+            Login
+          </RainbowButton>
+
           <RainbowButton className="mt-8 px-8" href="/register">
             Create Your Account
           </RainbowButton>
+          </Box>
         </Container>
       </Box>
     </>
