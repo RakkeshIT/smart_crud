@@ -235,7 +235,7 @@ export default function ResponsiveDialog() {
         <DialogActions sx={{ justifyContent: "center", gap: 1 }}>
           {type === "Confirm" && (
             <Button
-              onClick={onConfirm}
+              onClick={() => onConfirm}
               variant="contained"
               color="primary"
               sx={{ minWidth: 100 }}
@@ -257,7 +257,7 @@ export default function ResponsiveDialog() {
           <DialogActions sx={{ justifyContent: "center", gap: 1 }}>
             {type === "Confirm" && (
               <Button
-                onClick={onConfirm}
+                onClick={() => onConfirm}
                 variant="contained"
                 color="primary"
                 sx={{ minWidth: 100 }}
