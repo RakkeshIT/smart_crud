@@ -27,7 +27,7 @@ const statusOption = [
     {value: 'Completed', icon: <CheckCircle/>, color: 'green'},
     {value: 'Cancelled', icon: <DeleteOutline/>, color: 'red'},
 ]
-const CreateTask = () => {
+const JobSeekers = () => {
     const [field, setField] = useState<string[]>(Array(5).fill(''));
 
     const handleAddField = () => {
@@ -223,4 +223,4 @@ const CreateTask = () => {
     )
 }
 
-export default CreateTask
+export default JobSeekers

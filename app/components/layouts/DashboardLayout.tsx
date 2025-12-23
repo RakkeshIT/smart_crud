@@ -29,12 +29,14 @@ const DRAWER_WIDTH_OPEN = 200;
 const DRAWER_WIDTH_CLOSED = 50;
 import Image from 'next/image';
 import { History, Task, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { formSelectionDialog } from '../globalDialog';
+import { useRouter } from 'next/navigation';
 const menuItems = [
   { text: 'Dashboard', href:'/client', icon: <DashboardIcon sx={{ color: '#4B0082' }} /> },
   { text: 'History', href:'/client/history', icon: <History sx={{ color: '#4B0082' }} /> },
   { text: 'Reports', href:'/client/reports', icon: <BarChartIcon sx={{ color: '#4B0082' }} /> },
   { text: 'Task', subMenu: [
-    { text: 'Create Task', href:'/client/tasks/create' },
+    { text: 'Create Task', href:'' },
     { text: 'View Tasks', href:'/client/tasks' },
     // Completed Task
     { text: 'Completed Tasks', href:'/client/tasks/completed' },
@@ -52,6 +54,7 @@ export default function DashboardLayoutWrapper({
   const [open, setOpen] = React.useState(true);
   const [openSubMenu, setOpenSubMenu] = React.useState<string | null>(null);
   const {user} = useUser();
+  const router = useRouter()
   const  {signOut} = useClerk();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const MenuOpen = Boolean(anchorEl);
@@ -63,6 +66,15 @@ export default function DashboardLayoutWrapper({
   };
   const handleSubMenuClick = (text: string) => {
     setOpenSubMenu((pre) => ( pre === text ? null : text))
+  }
+  const handleOpenCreateTaskDialog = () => {
+    formSelectionDialog(
+      'Who Are You',
+      (selected) => { 
+        router.push(`/client/task/${selected}`)
+      },
+      ['student', 'government-aspirant', 'job-seeker', 'Working-professional']
+    )
   }
   return (
     <Box sx={{ display: 'flex' }}>
@@ -188,7 +200,9 @@ export default function DashboardLayoutWrapper({
                       sx={{ pl: 4, justifyContent: 'initial' }}
                     >
                       <Link href={subItem.href}>
-                        <ListItemText primary={subItem.text} />
+                        <ListItemText primary={subItem.text}
+                          onClick={subItem.text === 'Create Task' ? handleOpenCreateTaskDialog : undefined}
+                        />
                       </Link>
                     </ListItemButton>
                   ))}
