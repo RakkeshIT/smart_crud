@@ -1,11 +1,10 @@
 'use client'
 import {
   Container, Grid, Box, Typography, TextField,
-  Autocomplete, Button, Chip, IconButton, Paper,
+  Autocomplete, Button, Chip,
   Card, CardContent, ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import React, { useState } from 'react'
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -19,7 +18,6 @@ import {
   Add,
   Work,
   TrendingUp,
-  Close,
   CalendarToday,
   LocationOn,
   Business,
@@ -96,7 +94,11 @@ const priorityOptions = [
 
 type FormType = 'interview' | 'skills' | null;
 
-const GlassCard = ({ children, sx = {} }: any) => (
+interface GlassCardProps {
+  children: React.ReactNode,
+  sx? : Record<string, unknown>,
+}
+const GlassCard = ({ children, sx = {} }: GlassCardProps) => (
   <Card
     sx={{
       background: premiumColors.glassWhite,
@@ -115,24 +117,10 @@ const GlassCard = ({ children, sx = {} }: any) => (
 
 const JobSeekers = () => {
   const [selectedForm, setSelectedForm] = useState<FormType>('interview');
-  const [topics, setTopics] = useState<string[]>(['', '']);
   const [attachments, setAttachments] = useState<File[]>([]);
   const [skills, setSkills] = useState<string[]>(['React', 'TypeScript']);
   const [currentSkill, setCurrentSkill] = useState('');
 
-  const handleAddTopic = () => {
-    setTopics([...topics, '']);
-  };
-
-  const handleRemoveTopic = (index: number) => {
-    setTopics(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const handleTopicChange = (index: number, value: string) => {
-    const newTopics = [...topics];
-    newTopics[index] = value;
-    setTopics(newTopics);
-  };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

@@ -121,7 +121,11 @@ const priorityOptions = [
   { value: 'Critical', color: '#7C2D12' },
 ];
 
-const GlassCard = ({ children, sx = {} }: any) => (
+interface GlassCardProps {
+  children: React.ReactNode,
+  sx? : Record<string, unknown>,
+}
+const GlassCard = ({ children, sx = {} }: GlassCardProps) => (
   <Card
     sx={{
       background: premiumColors.glassWhite,

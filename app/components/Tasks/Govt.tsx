@@ -2,11 +2,10 @@
 import {
   Container, Grid, Box, Typography, TextField,
   Autocomplete, Button, Chip, IconButton, Paper,
-  Card, CardContent, Tabs, Tab, Divider, LinearProgress,
+  Card, CardContent, Tabs, Tab, LinearProgress,
   Slider, Rating
 } from '@mui/material'
 import React, { useState } from 'react'
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -18,10 +17,7 @@ import {
   PauseCircle,
   AttachFile,
   Add,
-  CalendarToday,
   School,
-  Description,
-  PriorityHigh,
   CloudUpload,
   Cancel,
   Check,
@@ -33,12 +29,9 @@ import {
   Assessment,
   History,
   Checklist,
-  BarChart,
   Speed,
-  EmojiEvents,
   MenuBook,
   AccessTime,
-  DoneAll,
   PlaylistAddCheck,
   Psychology,
   Replay
@@ -112,7 +105,13 @@ const tabStyle = (formType: 'syllabus' | 'revision', isActive: boolean) => ({
 });
 
 // Form Card Component
-const FormCard = ({ children, formType, sx = {} }: any) => (
+interface FormCardProps {
+  children: React.ReactNode;
+  formType: 'syllabus' | 'revision';
+  sx?: Record<string, unknown>;
+}
+
+const FormCard = ({ children, formType, sx = {} }: FormCardProps) => (
   <Card
     sx={{
       background: 'rgba(255, 255, 255, 0.98)',

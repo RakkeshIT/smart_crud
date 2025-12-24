@@ -135,7 +135,12 @@ const tabStyle = (formType: string, isActive: boolean) => ({
 });
 
 // Glass Card with gradient
-const ProfessionalCard = ({ children, formType, sx = {} }: any) => {
+interface ProfessionalCardProps {
+  children: React.ReactNode,
+  sx? : Record<string, unknown>,
+  formType: 'project' | 'knowledge' | 'planning'
+}
+const ProfessionalCard = ({ children, formType, sx = {} }: ProfessionalCardProps) => {
   const colors = professionalColors[formType as keyof typeof professionalColors];
   return (
     <Card
@@ -543,7 +548,7 @@ const ProfessionalDashboard = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
                 <Lightbulb sx={{ color: professionalColors.knowledge.primary, fontSize: 22 }} />
                 <Typography variant="subtitle1" fontWeight={600} color={professionalColors.knowledge.primary}>
-                  Today's Learning Focus
+                  Today&apos;s Learning Focus
                 </Typography>
               </Box>
               <Grid container spacing={1.5}>
