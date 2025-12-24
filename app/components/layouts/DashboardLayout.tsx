@@ -194,7 +194,7 @@ export default function DashboardLayoutWrapper({
             {item.subMenu && (
               <Collapse in={openSubMenu === item.text && open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  {item.subMenu.map((subItem: any) => (
+                  {item.subMenu.map((subItem) => (
                     <ListItemButton
                       key={subItem.text}
                       sx={{ pl: 4, justifyContent: 'initial' }}
