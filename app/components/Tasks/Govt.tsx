@@ -655,7 +655,6 @@ const Govt = () => {
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
                         <Chip
-                          key={index}
                           label={option}
                           size="small"
                           {...getTagProps({ index })}
