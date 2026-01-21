@@ -448,7 +448,6 @@ const ProfessionalDashboard = () => {
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
                         <Chip
-                          key={index}
                           label={option}
                           size="small"
                           {...getTagProps({ index })}
@@ -840,7 +839,6 @@ const ProfessionalDashboard = () => {
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
                         <Chip
-                          key={index}
                           label={option}
                           size="small"
                           {...getTagProps({ index })}
