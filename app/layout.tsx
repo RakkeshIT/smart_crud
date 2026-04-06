@@ -11,6 +11,7 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
+import AuthProvider from "@/lib/AuthProvider";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ['300', '400', '500', '600', '700'],
@@ -31,16 +32,18 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en">
-      <body
-        className={poppins.className}
-      >
-         <AppRouterCacheProvider>
-           {children}
-           <ResponsiveDialog/> 
-         </AppRouterCacheProvider>
-      </body>
-    </html>
+      <html lang="en">
+        <body
+          className={poppins.className}
+        >
+          <AppRouterCacheProvider>
+            <AuthProvider>
+              {children}
+              <ResponsiveDialog />
+            </AuthProvider>
+          </AppRouterCacheProvider>
+        </body>
+      </html>
     </ClerkProvider>
 
   );

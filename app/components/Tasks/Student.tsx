@@ -32,7 +32,9 @@ import {
   Assignment,
   TrendingUp
 } from '@mui/icons-material';
-
+import { Dayjs } from 'dayjs';
+import { useCreateData } from '@/lib/apiMethods';
+import { API_ENDPOINTS } from '@/services/APIEndpoints/apiEndPoints';
 // Premium Glass Styling with thin borders
 export const premiumGlassStyle = {
   "& .MuiOutlinedInput-root": {
@@ -123,7 +125,7 @@ const priorityOptions = [
 
 interface GlassCardProps {
   children: React.ReactNode,
-  sx? : Record<string, unknown>,
+  sx?: Record<string, unknown>,
 }
 const GlassCard = ({ children, sx = {} }: GlassCardProps) => (
   <Card
@@ -144,24 +146,34 @@ const GlassCard = ({ children, sx = {} }: GlassCardProps) => (
 
 const Student = () => {
   const [selectedClass, setSelectedClass] = useState('');
-  const [topics, setTopics] = useState<string[]>(['', '']);
   const [attachments, setAttachments] = useState<File[]>([]);
   const [subjects, setSubjects] = useState<string[]>(['Mathematics', 'Science']);
   const [currentSubject, setCurrentSubject] = useState('');
-  const [studyHours, setStudyHours] = useState('');
-
+  const [studentData, setStudentData] = useState({
+    studentName: '',
+    class: '',
+    subjects: [] as string[],
+    taskName: '',
+    taskDescription: '',
+    dueDate: null as Dayjs | null,
+    estimatedHours: '',
+    status: null as any,
+    priority: null as any,
+    notes: '',
+    topics: [] as string[],
+  })
   const handleAddTopic = () => {
-    setTopics([...topics, '']);
+    setStudentData((prev) => ({ ...prev, topics: [...prev.topics, ''] }))
   };
 
   const handleRemoveTopic = (index: number) => {
-    setTopics(prev => prev.filter((_, i) => i !== index));
+    setStudentData((prev) => ({ ...prev, topics: prev.topics.filter((_, i) => i !== index) }))
   };
 
   const handleTopicChange = (index: number, value: string) => {
-    const newTopics = [...topics];
+    const newTopics = [...studentData.topics];
     newTopics[index] = value;
-    setTopics(newTopics);
+    setStudentData((prev) => ({ ...prev, topics: newTopics }))
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,6 +204,58 @@ const Student = () => {
     }
   };
 
+  const handleChange = (eOrValue: React.ChangeEvent<HTMLInputElement> | unknown, fieldName?: string, index?: number) => {
+
+    // normal input
+    if (typeof eOrValue === 'object' && eOrValue !== null && 'target' in eOrValue) {
+      const { name, value } = eOrValue.target as HTMLInputElement;
+      setStudentData(prev => ({ ...prev, [name]: value }));
+    }
+    // array input
+    else if (fieldName && typeof index === 'number') {
+      setStudentData((prev) => {
+        const updatedArray = [...(prev as any)[fieldName]]
+        updatedArray[index] = eOrValue
+        return {
+          ...prev,
+          [fieldName]: updatedArray,
+        }
+      })
+    }
+    else {
+      setStudentData((prev) => ({ ...prev, [fieldName!]: eOrValue }))
+    }
+  }
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+
+    formData.append('studentName', studentData.studentName);
+    formData.append('class', selectedClass);
+    formData.append('subjects', JSON.stringify(subjects));
+    formData.append('taskName', studentData.taskName);
+    formData.append('taskDescription', studentData.taskDescription);
+    formData.append(
+      'dueDate',
+      studentData.dueDate?.format('YYYY-MM-DD') || ''
+    );
+    formData.append('estimatedHours', studentData.estimatedHours);
+    formData.append('status', studentData.status?.value || '');
+    formData.append('priority', studentData.priority?.value || '');
+    formData.append('notes', studentData.notes);
+    formData.append('topics', JSON.stringify(studentData.topics));
+
+    attachments.forEach(file => {
+      formData.append('files', file);
+    });
+    try {
+      const res = await useCreateData(API_ENDPOINTS.TASK.CREATE, formData)
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
       {/* Header */}
@@ -219,6 +283,9 @@ const Student = () => {
               size="small"
               label="Student Name"
               placeholder="Enter your name"
+              value={studentData.studentName}
+              onChange={handleChange}
+              name="studentName"
               sx={premiumGlassStyle}
             />
           </Grid>
@@ -264,6 +331,9 @@ const Student = () => {
                       fullWidth
                       size="small"
                       label="Task Name"
+                      name="taskName"
+                      value={studentData.taskName}
+                      onChange={handleChange}
                       placeholder="e.g., Math Homework - Chapter 5"
                       sx={premiumGlassStyle}
                     />
@@ -275,6 +345,9 @@ const Student = () => {
                       multiline
                       rows={2}
                       label="Task Description"
+                      name="taskDescription"
+                      value={studentData.taskDescription}
+                      onChange={handleChange}
                       placeholder="Describe the task or assignment..."
                       sx={premiumGlassStyle}
                     />
@@ -282,6 +355,8 @@ const Student = () => {
                   <Grid size={{ xs: 12, md: 6 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
+                        value={studentData.dueDate}
+                        onChange={(value) => handleChange(value, "dueDate")}
                         slotProps={{
                           textField: {
                             size: 'small',
@@ -302,8 +377,9 @@ const Student = () => {
                       size="small"
                       label="Estimated Time"
                       placeholder="e.g., 2 hours"
-                      value={studyHours}
-                      onChange={(e) => setStudyHours(e.target.value)}
+                      value={studentData.estimatedHours}
+                      onChange={handleChange}
+                      name='estimatedHours'
                       InputProps={{
                         startAdornment: <Timer sx={{ color: premiumColors.secondary, mr: 1, fontSize: 18 }} />,
                       }}
@@ -334,17 +410,17 @@ const Student = () => {
                   </Button>
                 </Box>
                 <Grid container spacing={1}>
-                  {topics.map((topic, index) => (
+                  {studentData.topics.map((topic, index) => (
                     <Grid size={{ xs: 12 }} key={index}>
                       <TextField
                         fullWidth
                         size="small"
                         value={topic}
-                        onChange={(e) => handleTopicChange(index, e.target.value)}
+                        onChange={(e) => handleChange(e.target.value, 'topics', index)}
                         placeholder={`Step ${index + 1}`}
                         sx={premiumGlassStyle}
                         InputProps={{
-                          endAdornment: topics.length > 1 && (
+                          endAdornment: studentData.topics.length > 1 && (
                             <IconButton
                               size="small"
                               onClick={() => handleRemoveTopic(index)}
@@ -381,6 +457,8 @@ const Student = () => {
                       size="small"
                       options={statusOptions}
                       getOptionLabel={(option) => option.value}
+                      value={studentData.status}
+                      onChange={(e, val) => handleChange(val, 'status')}
                       renderOption={(props, option) => (
                         <Box
                           component="li"
@@ -404,6 +482,8 @@ const Student = () => {
                       size="small"
                       options={priorityOptions}
                       getOptionLabel={(option) => option.value}
+                      value={studentData.priority}
+                      onChange={(e, val) => handleChange(val, 'priority')}
                       renderOption={(props, option) => (
                         <Box
                           component="li"
@@ -436,6 +516,9 @@ const Student = () => {
                       rows={2}
                       label="Notes & Comments"
                       placeholder="Key points, difficulties, or additional notes..."
+                      value={studentData.notes}
+                      onChange={handleChange}
+                      name='notes'
                       sx={premiumGlassStyle}
                       InputProps={{
                         startAdornment: <NoteAdd sx={{ color: premiumColors.secondary, mr: 1, alignSelf: 'flex-start', mt: 1, fontSize: 18 }} />,
@@ -580,11 +663,22 @@ const Student = () => {
           startIcon={<Cancel />}
           onClick={() => {
             setSelectedClass('');
-            setTopics(['', '']);
+            setStudentData({
+              studentName: '',
+              class: '',
+              subjects: [],
+              taskName: '',
+              taskDescription: '',
+              dueDate: null,
+              estimatedHours: '',
+              status: null,
+              priority: null,
+              notes: '',
+              topics: [],
+            });
             setAttachments([]);
             setSubjects(['Mathematics', 'Science']);
             setCurrentSubject('');
-            setStudyHours('');
           }}
           sx={{
             color: premiumColors.secondary,
@@ -617,6 +711,7 @@ const Student = () => {
                 background: 'rgba(0, 102, 204, 1)',
               }
             }}
+            onClick={handleSubmit}
           >
             <Check sx={{ mr: 0.5, fontSize: 18 }} />
             Save Task
