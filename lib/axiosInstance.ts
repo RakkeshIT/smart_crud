@@ -1,19 +1,19 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-    baseURL: process.env.NODE_ENV === 'development' ? process.env.BASE_DEV_URL : process.env.BASE_URL,
+    baseURL: process.env.NODE_ENV === 'development' ? process.env.NEXT_PUBLIC_BASE_DEV_URL : process.env.NEXT_PUBLIC_BASE_URL,
     headers: {
         'Content-Type': 'application/json'
     }
 })
 
-export const setAuthTokeen = (token: string | null) => {
-    if (token) {
-        axiosClient.defaults.headers.common["Authorization"] = `Bearer ${token}`
-    } else {
-        delete axiosClient.defaults.headers.common["Authorization"]
-    }
-}
+// export const setAuthTokeen = (token: string | null) => {
+//     if (token) {
+//         axiosClient.defaults.headers.common["Authorization"] = `Bearer ${token}`
+//     } else {
+//         delete axiosClient.defaults.headers.common["Authorization"]
+//     }
+// }
 
 
 axiosClient.interceptors.response.use(

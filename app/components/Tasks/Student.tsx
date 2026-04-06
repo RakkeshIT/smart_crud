@@ -3,7 +3,8 @@ import {
   Container, Grid, Box, Typography, TextField,
   Autocomplete, Button, Chip, IconButton, Paper,
   Card, CardContent, Select, MenuItem, FormControl,
-  InputLabel
+  InputLabel,
+  CircularProgress
 } from '@mui/material'
 import React, { useState } from 'react'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -35,6 +36,7 @@ import {
 import { Dayjs } from 'dayjs';
 import { useCreateData } from '@/lib/apiMethods';
 import { API_ENDPOINTS } from '@/services/APIEndpoints/apiEndPoints';
+import { toast } from 'react-hot-toast'
 // Premium Glass Styling with thin borders
 export const premiumGlassStyle = {
   "& .MuiOutlinedInput-root": {
@@ -149,6 +151,7 @@ const Student = () => {
   const [attachments, setAttachments] = useState<File[]>([]);
   const [subjects, setSubjects] = useState<string[]>(['Mathematics', 'Science']);
   const [currentSubject, setCurrentSubject] = useState('');
+  const [loading, setLoading] = useState(false)
   const [studentData, setStudentData] = useState({
     studentName: '',
     class: '',
@@ -227,9 +230,8 @@ const Student = () => {
     }
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (type: 'submit' | 'draft') => {
     const formData = new FormData();
-
     formData.append('studentName', studentData.studentName);
     formData.append('class', selectedClass);
     formData.append('subjects', JSON.stringify(subjects));
@@ -249,10 +251,19 @@ const Student = () => {
       formData.append('files', file);
     });
     try {
-      const res = await useCreateData(API_ENDPOINTS.TASK.CREATE, formData)
+      setLoading(true)
+      const endpoint = type === 'submit' ? API_ENDPOINTS.TASK.CREATE : API_ENDPOINTS.TASK.DRAFT
+      const res = await useCreateData<{ status: number; message: string }>(endpoint, formData)
       console.log(res);
+      if (res.status === 200) {
+        toast.success(res.message)
+      } else {
+        toast.error(res.message)
+      }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -700,6 +711,7 @@ const Student = () => {
                 background: premiumColors.primaryLight,
               }
             }}
+            onClick={() => handleSubmit('draft')}
           >
             Save as Draft
           </Button>
@@ -711,9 +723,16 @@ const Student = () => {
                 background: 'rgba(0, 102, 204, 1)',
               }
             }}
-            onClick={handleSubmit}
+            onClick={() => handleSubmit('submit')}
           >
-            <Check sx={{ mr: 0.5, fontSize: 18 }} />
+            {
+              loading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                <Check sx={{ mr: 0.5, fontSize: 18 }} />
+              )
+            }
+
             Save Task
           </Button>
         </Box>
